@@ -9,73 +9,56 @@ class Solution {
         list.sort(Comparator.naturalOrder());
         Set<List<Integer>> sumsInd = new HashSet<>();
 
-        int pivot = target / 4;
-        int i2 = list.size() / 2;
-        if ((i2 * 2) == list.size())
-            i2--;
-        int i1 = i2-1;
-        int i3 = i2+1;
-        int i4 = i3+1;
-        int isum;
+        int i1 = 0;
+        int i2 = 1;
+        int i4 = list.size()-1;
+        int i3 = i4-1;
+        long lTarget = target;
+        long isum;
         while (true){
-            System.out.println(" =O loop=> " + i1+i4);
             while (true){
                 // check 
-                isum = list.get(i1) + list.get(i2) + list.get(i3) + list.get(i4);
-                System.out.println(" =loop=> " + i1+i2+i3+i4 + " sum:" + isum);
-                if (isum == target) {
+                isum = (long) list.get(i1) + (long) list.get(i2) 
+                    + (long) list.get(i3) + (long) list.get(i4);
+                if (isum == lTarget) {
                     List oneInds = List.of(i1, i2, i3, i4);
                     if (!sumsInd.contains(oneInds)) {
                         sumsInd.add(oneInds);
                     }
                 }
-                if ((i1 == i2-1 && isum > target) 
-                    || (i3+1 == i4 && isum <= target)){
+                if ((i2 + 1) == i3){
                     break;
                 }
-                if (isum > target && i1 < i2-1){
-                        i2--;
- //                       while (list.get(i2) == list.get(i2+1))
- //                           i2--;
+                if (isum > lTarget){
+                    int cur = list.get(i3);
+                    while (list.get(i3) == cur && i3 > (i2+1))
+                        i3--;
                 }
                 else {
-                    if (i3+1 < i4){
-                        i3++;
- //                       while (list.get(i3) == list.get(i3-1))
- //                           i3++;
-                    }
-                    else if (i1 < i2-1){
-                        i2--;
- //                       while (list.get(i2) == list.get(i2+1))
- //                           i2--;
-                    }
+                    int cur = list.get(i2);
+                    while (list.get(i2) == cur && i3 > (i2+1))
+                        i2++;
                 }
             }
-            if (i1 == 0 && list.size() == i4+1){
-                System.out.println(" =Break=> " + i1+i4);
+            if ((i1 + 4) == list.size()){
                 break;
             }
-            // Check 3,4
-            if ((isum > target) && (0 < i1)){
-                i1--;
-//                    while (list.get(i1) == list.get(i1+1))
-//                       i1--;
+            if ((i1 + 3) < i4){
+                int cur = list.get(i4);
+                while (list.get(i4) == cur && (i1 + 3) < i4)
+                    i4--;
             }
             else {
-                if (i4+1 < list.size()){
-                    i4++;
-//                    while (list.get(i4) == list.get(i4-1))
-//                        i4++;
-                }
-                else if (0 < i1){
-                    i1--;
-                }
+                int cur = list.get(i1);
+                while (list.get(i1) == cur && (i1 + 4) < list.size())
+                    i1++;
+                i4 = list.size()-1;
             }
-            i2 = (i1 + i4) / 2;
-            i3 = i2+1;
+
+            i2 = i1 + 1;
+            i3 = i4 - 1;
         }
 
-//        Set<List<Integer>> dups = new HashSet<>();
         List<List<Integer>> results = new ArrayList<>();
         for (List<Integer> inds : sumsInd) {
             List oneRes = List.of(list.get(inds.get(0)), 
@@ -83,7 +66,6 @@ class Solution {
                     list.get(inds.get(2)), 
                         list.get(inds.get(3)));
             if (!results.contains(oneRes)){
-//                dups.add(oneRes);
                 results.add(oneRes);
             }
         }
@@ -92,6 +74,7 @@ class Solution {
 }
 // [-2,-1,0,0,1,2]
 // [-3,-1,0,2,4,5]
+
 
 	/*
         Set<List<Integer>> res = new HashSet<>();
