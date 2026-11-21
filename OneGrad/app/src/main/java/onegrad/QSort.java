@@ -55,7 +55,11 @@ public class QSort {
     if (arr.length != sorted.length) {
       printErr(arr, sorted, String.format("wrong size %d , %d", arr.length, sorted.length));
     }
-
+    for (int i = 0; i < arr.length; i++ ){
+      if (arr [i] != sorted [i]){
+        printErr(arr, sorted, "Not similar ");
+      }
+    }
     
     return true;
   }
