@@ -4,7 +4,9 @@
 package onegrad;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class App {
 
@@ -21,22 +23,46 @@ public class App {
     private List<OneSet> samples = new ArrayList<>();
 
     public App () {
-        samples.add(new OneSet (new int []{5,2,9,10,11,1,4,3,6,7,8}, new int []{1,2,3,4,5,6,7,8,9,10,11}));
-        samples.add(new OneSet (new int []{1,7,2,4}, new int []{1,2,4,7}));
+        fillSamples ();
+    }
+
+    private void fillSamples () {
+//        samples.add(new OneSet (new int []{5,2,9,10,11,1,4,3,6,7,8}, new int []{1,2,3,4,5,6,7,8,9,10,11}));
+//        samples.add(new OneSet (new int []{1,7,2,4}, new int []{1,2,4,7}));
+        QSort qs = new QSort ();
+        for (int i = 0; i < 10; i++){
+            int [] sorted = new int [100];
+            int [] arr = new int [100];
+            for (int n = 0; n < 100; n++){
+                sorted[n] = n;
+                arr[n] = n;
+            }
+            qs.shake(arr);
+//            System.out.println(String.format(" ====> %d shakes", qs.getrCount()));
+            samples.add(new OneSet (arr, sorted));
+        }
     }
 
     public boolean run () {
         System.out.println(" == Start == ");
 
         QSort qs = new QSort ();
-
-        boolean bOk = samples.stream().map(s -> {
+        long total = 0L;
+        long count = 0L;
+        boolean bOk = true;
+        for (OneSet s : samples){
+            System.out.println(" ==> One set ");
             // Sort 
+//            System.out.println(String.format(" ==> before sort %s", Arrays.toString(s.arr)));
             qs.sort(s.arr);
+            System.out.println(String.format(" ====> %d moves", qs.getrCount()));
             // Test 
-            return qs.validate(s.arr, s.sortedArr);
-        }).allMatch(b -> b);
-
+            total += qs.getrCount();
+            count++;
+            bOk = qs.validate(s.arr, s.sortedArr) && bOk;
+        }
+        float fAvgMoves = (float) total / (float) count;
+        System.out.println(String.format(" ==> %d sorts, %f average moves", count, fAvgMoves));
         if (bOk)
             System.out.println(" == all OK == ");
         else
