@@ -1,4 +1,136 @@
 class Solution {
+    public List<List<Integer>> fourSum(int[] snums, int target) {
+        if (snums.length < 4){
+            return List.of();
+        }
+        sort(snums);
+        int lastI = snums.length - 1;
+        long lTarget = target;
+        long maxVal = lTarget - (long) snums[0] - (long) snums[1] - (long) snums[2];
+        int pos1 = 0;
+        int pos2 = 0;
+        int sameValCount = 0;
+        while(pos2 < snums.length - 1){
+            pos2++;
+            if (snums[pos1] != snums[pos2]){
+                sameValCount = 0;
+            }
+            else {
+                sameValCount++;
+            }
+            if (sameValCount < 4){
+                pos1++;
+            }
+            if (pos2 > pos1){
+                snums[pos1] = snums[pos2];
+            }
+            if (snums[pos1] > maxVal) {
+                break;
+            }
+        }
+        lastI = pos1;
+        if (lastI < 3){
+            return List.of();
+        }
+
+        List<List<Integer>> results = new ArrayList<>();
+        int i1 = 0;
+        int i2 = 1;
+        int i4 = lastI;
+        int i3 = i4-1;
+        long isum;
+
+        while (true){
+            while (true){
+                // check 
+                isum = (long) snums[i1] + (long) snums[i2] 
+                    + (long) snums[i3] + (long) snums[i4];
+                if (isum == lTarget) {
+                    List oneRes = List.of(snums[i1], snums[i2],snums[i3], snums[i4]);
+                    if (!results.contains(oneRes))
+                        results.add(oneRes);
+                }
+                if ((i2 + 1) == i3){
+                    break;
+                }
+                if (isum > lTarget){
+                    int cur = snums[i3];
+                    while (snums[i3] == cur && i3 > (i2+1))
+                        i3--;
+                }
+                else {
+                    int cur = snums[i2];
+                    while (snums[i2] == cur && i3 > (i2+1))
+                        i2++;
+                }
+            }
+            if ((i1 + 3) == lastI){
+                break;
+            }
+            if ((i1 + 3) < i4){
+                int cur = snums[i4];
+                while (snums[i4] == cur && (i1 + 3) < i4)
+                    i4--;
+            }
+            else {
+                int cur = snums[i1];
+                while (snums[i1] == cur && (i1 + 3) < lastI)
+                    i1++;
+                i4 = lastI;
+            }
+
+            i2 = i1 + 1;
+            i3 = i4 - 1;
+        }
+
+        return results;
+    }
+
+    public void sort (int [] arr) {
+        doSort (arr, 0, arr.length-1);
+    }
+
+    private void doSort (int [] arr, int start, int end) {
+        if (start >= end){
+            return;
+        }
+
+        int mid = (start + end) / 2;
+        int pivot = arr[mid];
+        int pos1 = start;
+        int pos2 = end;
+
+        while (pos1 < pos2) {
+        while (pos1 < mid && arr[pos1] < pivot){
+            pos1++;
+        }
+
+        if (pos1 < mid){
+            replace (arr, pos1, mid);
+            mid = pos1;
+        }
+
+        while (pos2 > mid && arr[pos2] >= pivot){
+            pos2--;
+        }
+
+        if (pos2 > mid){
+            replace (arr, pos2, mid);
+            mid = pos2;
+        }
+        }
+        doSort (arr, start, mid-1);
+        doSort (arr, mid+1, end);
+    }
+
+    private void replace (int [] arr, int from, int to){
+        int tmp = arr[from];
+        arr[from] = arr[to];
+        arr[to] = tmp;
+    }
+}
+/**
+class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
         if (nums.length < 4){
             return List.of();
@@ -72,6 +204,7 @@ class Solution {
         return results;
     }
 }
+*/
 // [-2,-1,0,0,1,2]
 // [-3,-1,0,2,4,5]
 
@@ -123,3 +256,4 @@ class Solution {
         return result;
 */        
  
+
