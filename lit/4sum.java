@@ -4,47 +4,54 @@ class Solution {
             return List.of();
         }
         sort(snums);
-        int lastI = snums.length - 1;
         long lTarget = target;
         long maxVal = lTarget - (long) snums[0] - (long) snums[1] - (long) snums[2];
-        int pos1 = 0;
-        int pos2 = 0;
-        int sameValCount = 0;
-        while(pos2 < snums.length - 1){
-            pos2++;
-            if (snums[pos1] != snums[pos2]){
-                sameValCount = 0;
+        int lastI = 0;
+        int i2 = 0;
+        int i3 = 0;
+        while(i2 < snums.length - 1){
+            i2++;
+            if (snums[lastI] != snums[i2]){
+                i3 = 0;
             }
             else {
-                sameValCount++;
+                i3++;
             }
-            if (sameValCount < 4){
-                pos1++;
+            if (i3 < 4){
+                lastI++;
             }
-            if (pos2 > pos1){
-                snums[pos1] = snums[pos2];
+            if (i2 > lastI){
+                snums[lastI] = snums[i2];
             }
-            if (snums[pos1] > maxVal) {
+            if (snums[lastI] > maxVal) {
                 break;
             }
         }
-        lastI = pos1;
         if (lastI < 3){
+            return List.of();
+        }
+
+	long minSum = (long) snums[0] + (long) snums[1] + (long) snums[2] + (long) snums[3];
+        long maxSum = (long) snums[lastI] + (long) snums[lastI-1] + (long) snums[lastI-2] + (long) snums[lastI-3];
+        if ((maxSum < lTarget) || (minSum > lTarget)){
             return List.of();
         }
 
         List<List<Integer>> results = new ArrayList<>();
         int i1 = 0;
-        int i2 = 1;
+        i2 = 1;
         int i4 = lastI;
-        int i3 = i4-1;
+        i3 = i4-1;
         long isum;
 
         while (true){
-            while (true){
+            long partSum14 = (long) snums[i1] + (long) snums[i4];
+            long minPartSum = partSum14 + (long) snums[i1+1] + (long) snums[i1+2];
+            long maxPartSum = partSum14 + (long) snums[i4-1] + (long) snums[i4-2];
+            boolean check23 = !((maxPartSum < lTarget) || (minPartSum > lTarget));
+            while (check23){
                 // check 
-                isum = (long) snums[i1] + (long) snums[i2] 
-                    + (long) snums[i3] + (long) snums[i4];
+                isum = partSum14 + (long) snums[i2] + (long) snums[i3];
                 if (isum == lTarget) {
                     List oneRes = List.of(snums[i1], snums[i2],snums[i3], snums[i4]);
                     if (!results.contains(oneRes))
@@ -122,9 +129,9 @@ class Solution {
         doSort (arr, start, mid-1);
         doSort (arr, mid+1, end);
     }
-
+    private int tmp;
     private void replace (int [] arr, int from, int to){
-        int tmp = arr[from];
+        tmp = arr[from];
         arr[from] = arr[to];
         arr[to] = tmp;
     }
